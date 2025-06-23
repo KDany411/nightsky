@@ -11,6 +11,7 @@ def spherical_to_cartesian(radius, theta, phi):
     return x, y, z
 
 def create_sphere(radius=1, rows=20, cols=20):
+    """Create a sphere mesh and show it"""
     mesh = gl.GLMeshItem(
         meshdata=gl.MeshData.sphere(rows=20, cols=20, radius=1),
         smooth=True, color=(1, 1, 1, 0.5))
@@ -19,3 +20,9 @@ def create_sphere(radius=1, rows=20, cols=20):
     sphere.setCameraPosition(distance=0.01, elevation=0, azimuth=0)
     sphere.show()
     pg.exec()
+    
+def app():
+    """Main function to run the application."""
+    app = QtWidgets.QApplication(sys.argv)
+    create_sphere()
+    sys.exit(app.exec())
