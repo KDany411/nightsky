@@ -1,9 +1,9 @@
 import pyqtgraph as pg
 import pyqtgraph.opengl as gl
-import PySide6.QtWidgets as QtWidgets
+from PyQt6.QtWidgets import QApplication
 import sys
 
-def spherical_to_cartesian(radius, theta, phi):
+def spherical_to_cartesian(theta, phi, radius=1):
     """Convert spherical coordinates to Cartesian coordinates."""
     x = radius * pg.math.sin(theta) * pg.math.cos(phi)
     y = radius * pg.math.sin(theta) * pg.math.sin(phi)
@@ -13,16 +13,16 @@ def spherical_to_cartesian(radius, theta, phi):
 def create_sphere(radius=1, rows=20, cols=20):
     """Create a sphere mesh and show it"""
     mesh = gl.GLMeshItem(
-        meshdata=gl.MeshData.sphere(rows=20, cols=20, radius=1),
-        smooth=True, color=(1, 1, 1, 0.5))
+        meshdata=gl.MeshData.sphere(rows=50, cols=50, radius=1),
+        smooth=True, shader='shaded')
     sphere = gl.GLViewWidget()
     sphere.addItem(mesh)
-    sphere.setCameraPosition(distance=0.01, elevation=0, azimuth=0)
+    sphere.setCameraPosition(distance=10, elevation=10, azimuth=10)
     sphere.show()
-    pg.exec()
     
-def app():
+def app(function: callable):
     """Main function to run the application."""
-    app = QtWidgets.QApplication(sys.argv)
-    create_sphere()
+    app = QApplication(sys.argv)
+    function()
     sys.exit(app.exec())
+
