@@ -6,9 +6,9 @@ import sys
 
 def spherical_to_cartesian(theta, phi, radius=1):
     """Convert spherical coordinates to Cartesian coordinates."""
-    x = radius * np.cos(theta) * np.sin(phi)
-    y = radius * np.cos(theta) * np.cos(phi)
-    z = radius * np.sin(theta)
+    x = radius * np.sin(theta) * np.cos(phi)
+    y = radius * np.sin(theta) * np.sin(phi)
+    z = radius * np.cos(theta)
     return x, y, z
 
 def create_sphere(radius=1, rows=20, cols=20):
@@ -20,7 +20,20 @@ def create_sphere(radius=1, rows=20, cols=20):
     mesh.setGLOptions('translucent')
     return mesh
 
-    
+def create_plane():
+    """Create a plane mesh."""
+    mesh = gl.GLMeshItem(
+        meshdata=gl.MeshData(vertexes=np.array([
+            [0, -1, 1],
+            [0, -1, -1],
+            [0, 1, -1],
+            [0, 1, 1]
+        ]), faces=np.array([
+            [0, 1, 2],
+            [0, 2, 3]
+        ])))
+    return mesh
+
 def view(renderable_objects):
     """Main function to run the application."""
     app = gl.GLViewWidget()
@@ -39,7 +52,7 @@ def stars(star_data):
     for star in star_data:
         theta, phi = star.alt, star.az
         x, y, z = spherical_to_cartesian(phi, theta)
-        sphere = gl.GLScatterPlotItem(pos=[(x, y, z)], size= (-star.magnitude + 6.2), color=(0.5, 0.5, 1, 0.5))
+        sphere = gl.GLScatterPlotItem(pos=[(x, y, z)], size= (-star.magnitude + 8)/2, color=(0.5, 0.5, 1, 0.5))
         sphere.setGLOptions('opaque')
         list_of_stars.append(sphere)
     return list_of_stars

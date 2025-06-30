@@ -7,5 +7,6 @@ from PySide6.QtWidgets import QApplication
 qapp = QApplication(sys.argv)
 a = (render.create_sphere())
 b = render.stars(stars.observe_stars())
-render.view((b,a))
+c = render.create_plane()
+render.view((b,c,a))
 sys.exit(qapp.exec())
