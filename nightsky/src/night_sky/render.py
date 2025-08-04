@@ -4,10 +4,11 @@ import pyqtgraph.opengl as gl
 from PyQt6.QtWidgets import QApplication
 import sys
 
-def spherical_to_cartesian(theta, phi, radius=1):
+def spherical_to_cartesian(alt, az, radius=1000):
     """Convert spherical coordinates to Cartesian coordinates."""
-    x = radius * np.sin(theta) * np.cos(phi)
-    y = radius * np.sin(theta) * np.sin(phi)
+    theta = np.pi / 2 - alt
+    x = radius * np.sin(theta) * np.cos(az)
+    y = radius * np.sin(theta) * np.sin(az)
     z = radius * np.cos(theta)
     return x, y, z
 
@@ -50,9 +51,16 @@ def view(renderable_objects):
 def stars(star_data):
     list_of_stars = []
     for star in star_data:
-        theta, phi = star.alt, star.az
-        x, y, z = spherical_to_cartesian(phi, theta)
-        sphere = gl.GLScatterPlotItem(pos=[(x, y, z)], size= (-star.magnitude + 8)/2, color=(0.5, 0.5, 1, 0.5))
+        alt, az = star.alt, star.az
+        x, y, z = spherical_to_cartesian(alt, az)
+        sphere = gl.GLScatterPlotItem(pos=[(x, y, z)], size= (-star.magnitude + 7)*1.2, color=(0.5, 0.5, 1, 0.5))
         sphere.setGLOptions('opaque')
         list_of_stars.append(sphere)
+        print(alt, az, x, y, z)
     return list_of_stars
+
+def coordinate_polar_axes(r=1000):
+    """Create coordinate axes."""
+    axis_alt = [gl.GLLinePlotItem(pos=np.array([[r*np.cos(np.deg2rad(angle))*float(np.cos(np.pi/72 * a)), r*np.cos(np.deg2rad(angle))*float(np.sin(np.pi/72 * a)), r*np.sin(np.deg2rad(angle))] for a in np.arange(145)]), color=(0.5, 0.5, 0.5, 0.5), width=2) for angle in np.arange(-180,180,10)]
+    axis_az = [gl.GLLinePlotItem(pos=np.array([[r*np.cos(np.deg2rad(angle))*float(np.cos(np.pi/72 * a)), r*np.cos(np.deg2rad(angle))*float(np.sin(np.pi/72 * a)), r*np.sin(np.deg2rad(angle))] for a in np.arange(145)]), color=(0.5, 0.5, 0.5, 0.5), width=2) for angle in np.arange(-180,180,10)]
+    return axis_alt

@@ -2,11 +2,12 @@ import pyqtgraph as pg
 import pyqtgraph.opengl as gl
 import sys
 import render, stars
-from PySide6.QtWidgets import QApplication
+import PySide6.QtWidgets 
 
-qapp = QApplication(sys.argv)
-a = (render.create_sphere())
+qapp = PySide6.QtWidgets.QApplication(sys.argv)
+a = render.create_sphere()
 b = render.stars(stars.observe_stars())
-c = render.create_plane()
-render.view((b,c,a))
+c = render.coordinate_polar_axes()
+#c = render.create_plane()
+render.view((b,a,c))
 sys.exit(qapp.exec())
