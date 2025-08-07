@@ -1,7 +1,7 @@
 import numpy as np
 import pyqtgraph as pg
 import pyqtgraph.opengl as gl
-from PyQt6.QtWidgets import QApplication
+from PySide6.QtCore import QTimer
 import sys
 
 def spherical_to_cartesian(alt, az, radius=999):
@@ -45,19 +45,18 @@ def view(renderable_objects):
                 app.addItem(item)
         else: 
             app.addItem(object)
-        app.setCameraPosition(distance=0.2, elevation=0, azimuth=0)
+        app.setCameraPosition(distance=5, elevation=0, azimuth=0)
     app.show()
+    print(start_camera_logger(app))
 
 def stars(star_data):
-    list_of_stars = []
+    cords, magnitude = [], []
     for star in star_data:
-        alt, az = star.alt, star.az
-        x, y, z = spherical_to_cartesian(alt, az)
-        sphere = gl.GLScatterPlotItem(pos=[(x, y, z)], size= (-star.magnitude + 7)*1.2, color=(0.5, 0.5, 1, 0))
-        sphere.setGLOptions('opaque')
-        list_of_stars.append(sphere)
-        print(alt, az, x, y, z)
-    return list_of_stars
+        cords.append(spherical_to_cartesian(star.alt, star.az))
+        magnitude.append((-star.magnitude + 7) * 1.2)
+    sphere = gl.GLScatterPlotItem(pos=cords, size=magnitude, color=(1, 1, 1, 1), pxMode=False)
+    sphere.setGLOptions('opaque')
+    return sphere
 
 def alt_polar_axes(r=1000):
     axis_alt = [gl.GLLinePlotItem(pos=np.array([[r*np.cos(np.deg2rad(angle))*float(np.cos(np.pi/72 * a)), r*np.cos(np.deg2rad(angle))*float(np.sin(np.pi/72 * a)), r*np.sin(np.deg2rad(angle))] for a in np.arange(145)]), color=(0.5, 0.5, 0.5, 0.5), width=2) for angle in np.arange(-180,180,10)]
