@@ -4,6 +4,10 @@ import pyqtgraph.opengl as gl
 from PySide6.QtCore import QTimer
 import sys
 
+class NoMouseZoom(gl.GLViewWidget):
+    def wheelEvent(self, ev):
+       pass
+
 def spherical_to_cartesian(alt, az, radius=995):
     """Convert spherical coordinates to Cartesian coordinates."""
     theta = np.pi / 2 - alt
@@ -53,7 +57,7 @@ def alt_polar_axes(r=1000):
               r*np.cos(np.deg2rad(angle))*float(np.sin(np.pi/72 * a)),
               r*np.sin(np.deg2rad(angle))] 
              for a in np.arange(145)]),
-        color=(0.5, 0.5, 0.5, 0.5), width=1 if angle == 0 else 0.5) 
+        color=(0.5, 0.5, 0.5, 0.5), width=0.5 if angle == 0 else 0.2) 
         for angle in np.arange(-180,180,10)]
     for circle in axis_alt:
         circle.setGLOptions('opaque')
@@ -69,8 +73,11 @@ def az_polar_axes(r=1000):
         color=(0.5 if angle % 90 != 0 else 1, 
                0.5 if angle % 90 != 0 else 1, 
                0.5 if angle % 90 != 0 else 1, 1),
-        width=0.5 if angle % 90 != 0 else 1)
+        width=0.2 if angle % 90 != 0 else 0.5)
         for angle in np.arange(0, 180, 10)]
     for circle in axis_az:
         circle.setGLOptions('opaque')
     return axis_az
+
+def extract_camera_azimuth(view_widget):
+     return view_widget.opts['azimuth']
