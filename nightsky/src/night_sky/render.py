@@ -2,14 +2,31 @@ import numpy as np
 import pyqtgraph as pg
 import pyqtgraph.opengl as gl
 from PySide6.QtCore import QTimer
+from PySide6 import QtCore
 import sys
 
 class NoMouseZoom(gl.GLViewWidget):
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
     def wheelEvent(self, ev):
-       pass
+        pass
+    def mouseMoveEvent(self, ev):
+        lpos = ev.position() if hasattr(ev, 'position') else ev.localPos()
+        if not hasattr(self, 'mousePos'):
+            self.mousePos = lpos
+        diff = lpos - self.mousePos
+        self.mousePos = lpos
+        
+        if ev.buttons() == QtCore.Qt.MouseButton.LeftButton:
+            if (ev.modifiers() & QtCore.Qt.KeyboardModifier.ControlModifier):
+                self.pan(diff.x() * 0.05, diff.y() * 0.05, 0, relative='view')
+            else:
+                self.orbit(-diff.x() * 0.05, diff.y() * 0.05)
+        elif ev.buttons() == QtCore.Qt.MouseButton.MiddleButton:
+            pass
 
 def spherical_to_cartesian(alt, az, radius=995):
-    """Convert spherical coordinates to Cartesian coordinates."""
     theta = np.pi / 2 - alt
     x = radius * np.sin(theta) * np.cos(az)
     y = radius * np.sin(theta) * np.sin(az)
@@ -17,7 +34,6 @@ def spherical_to_cartesian(alt, az, radius=995):
     return x, y, z
 
 def create_sphere(r=1005, rows=50, cols=50):
-    """Create a sphere mesh and show it"""
     mesh = gl.GLMeshItem(
         meshdata=gl.MeshData.sphere(rows, cols, radius=r),
         smooth=True)
@@ -26,7 +42,6 @@ def create_sphere(r=1005, rows=50, cols=50):
     return mesh
 
 def create_plane():
-    """Create a plane mesh."""
     mesh = gl.GLMeshItem(
         meshdata=gl.MeshData(vertexes=np.array([
             [-1000, -1000, 0],
@@ -46,7 +61,7 @@ def stars(star_data):
     for star in star_data:
         cords.append(spherical_to_cartesian(star.alt, star.az))
         magnitude.append((-star.magnitude + 7) * 1.2)
-    sphere = gl.GLScatterPlotItem(pos=cords, size=magnitude, color=(1, 1, 1, 1), pxMode=False)
+    sphere = gl.GLScatterPlotItem(pos=cords, size=magnitude, color=(0.7, 0.7, 1, 1), pxMode=False)
     sphere.setGLOptions('opaque')
     return sphere
 
@@ -79,5 +94,3 @@ def az_polar_axes(r=1000):
         circle.setGLOptions('opaque')
     return axis_az
 
-def extract_camera_azimuth(view_widget):
-     return view_widget.opts['azimuth']
