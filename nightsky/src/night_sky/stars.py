@@ -11,7 +11,7 @@ class StarBall(Star):
         self.magnitude = magnitude
         self.color = "white"
     
-def load_stars(max_magnitude=4):
+def load_stars(max_magnitude=6):
     with load.open(hipparcos.URL) as f:
         df = hipparcos.load_dataframe(f)
     return df[df['magnitude'] <= max_magnitude]

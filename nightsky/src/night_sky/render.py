@@ -20,11 +20,14 @@ class NoMouseZoom(gl.GLViewWidget):
         
         if ev.buttons() == QtCore.Qt.MouseButton.LeftButton:
             if (ev.modifiers() & QtCore.Qt.KeyboardModifier.ControlModifier):
-                self.pan(diff.x() * 0.05, diff.y() * 0.05, 0, relative='view')
+                self.pan(diff.x() * 0.2, diff.y() * 0.2, 0, relative='view')
             else:
-                self.orbit(-diff.x() * 0.05, diff.y() * 0.05)
-        elif ev.buttons() == QtCore.Qt.MouseButton.MiddleButton:
-            pass
+                self.orbit(-diff.x() * 0.2, diff.y() * 0.2)
+        elif ev.buttons() == QtCore.Qt.MouseButton.RightButton:
+            if (ev.modifiers() & QtCore.Qt.KeyboardModifier.ControlModifier):
+                self.pan(diff.x() * 0.03, diff.y() * 0.03, 0, relative='view')
+            else:
+                self.orbit(-diff.x() * 0.03, diff.y() * 0.03)
 
 def spherical_to_cartesian(alt, az, radius=995):
     theta = np.pi / 2 - alt
@@ -94,3 +97,5 @@ def az_polar_axes(r=1000):
         circle.setGLOptions('opaque')
     return axis_az
 
+def_dec_axes(r=1000):
+    axis_dec = [gl.GLLinePlotItem(
