@@ -97,5 +97,18 @@ def az_polar_axes(r=1000):
         circle.setGLOptions('opaque')
     return axis_az
 
-def_dec_axes(r=1000):
-    axis_dec = [gl.GLLinePlotItem(
+
+def rotate_a_point_around_vector(vec, point, angle):
+    vec1_ = np.array([spherical_to_cartesian(vec[0], vec[1])])
+    vec1 = vec / np.linalg.norm(vec)
+    u = np.array([0,0,1])
+    vec2_ =  vec1 - np.dot(u, vec1) * u
+    vec2 = vec2_ / np.linalg.norm(vec2_)
+    vec3 = np.cross(vec1, vec2)
+    base = np.matrix(vec1, vec2, vec3)
+    base_inverse = np.invert(base)
+    rot = np.matrix([1,0,0],[0,np.cos(angle),-np.sin(angle)],[0,np.sin(angle),np.cos(angle)])
+    rotated = base_inverse * rot * base * np.array(point)
+    return rotated
+
+print(rotate_a_point_around_vector([1,1,0], [0,0,1], np.pi/2))
