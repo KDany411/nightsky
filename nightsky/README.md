@@ -18,9 +18,10 @@ USER GUIDE:
 
 PROGRAMATORS GUIDE:
     The program is mainly designed around the 3 libraries:
+    
         PySide6 -   good for making a basic app, and user friendly UI customization.
 
-                    I used it for designing the layout of my app, adding all the widgets inclusing the OpenGL view widget, the azimuth and altitude tracker, the crosshair and the buttons
+                    I used it for designing the layout of my app, adding all the widgets inclusing the OpenGL view widget, the azimuth and altitude tracker, the                       crosshair and the buttons
 
         pyqtgraph - used for graphing but I used it because it is user friendly when it comes to rendering objects in a widget, one can make
                     objects in OpenGL without much prior knowledge.
